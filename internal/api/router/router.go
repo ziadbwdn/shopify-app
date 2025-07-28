@@ -42,7 +42,7 @@ func Setup(
 		userRoutes := api.Group("/user")
 		{
 			userRoutes.GET("/profile", userHandler.GetProfile)
-			userRoutes.PUT("/profile", user.UpdateProfile)
+			userRoutes.PUT("/profile", userHandler.UpdateProfile)
 			userRoutes.POST("/change-password", userHandler.ChangePassword)
 		}
 

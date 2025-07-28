@@ -1,8 +1,8 @@
 package web_response
 
 import (
-	"shopify-app/internal/exception" // Adjust import path if needed
 	"net/http"
+	"shopify-app/internal/exception"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,22 +23,27 @@ type ErrorDetail struct {
 }
 
 // Success sends a standardized success response.
-func RespondWithSuccess(c *gin.Context, code int, data interface{}) {
-	c.JSON(code, WebResponse{
-		Code:   code,
-		Status: http.StatusText(code),
+func Success(c *gin.Context, data interface{}) {
+	c.JSON(http.StatusOK, WebResponse{
+		Code:   http.StatusOK,
+		Status: "Success",
 		Data:   data,
 	})
 }
 
-// Error sends a standardized error response from an AppError.
-func HandleAppError(c *gin.Context, err *exception.AppError) {
-	status := err.HTTPStatus()
+// HandleError sends a standardized error response from an AppError.
+func HandleError(c *gin.Context, err error) {
+	appErr, ok := err.(*exception.AppError)
+	if !ok {
+		appErr = exception.NewInternalServerError(err.Error())
+	}
+
+	status := appErr.HTTPStatus()
 
 	errorDetail := ErrorDetail{
-		Code:    string(err.Code),
-		Message: err.Message,
-		Details: err.Details,
+		Code:    string(appErr.Code),
+		Message: appErr.Message,
+		Details: appErr.Details,
 	}
 
 	c.AbortWithStatusJSON(status, WebResponse{
@@ -46,4 +51,14 @@ func HandleAppError(c *gin.Context, err *exception.AppError) {
 		Status: http.StatusText(status),
 		Error:  errorDetail,
 	})
+}
+
+// NewUnauthorizedError creates a new unauthorized error.
+func NewUnauthorizedError(message string) *exception.AppError {
+	return exception.NewAppError(nil, message, exception.CodeUnauthorized)
+}
+
+// NewForbiddenError creates a new forbidden error.
+func NewForbiddenError(message string) *exception.AppError {
+	return exception.NewAppError(nil, message, exception.CodeForbidden)
 }

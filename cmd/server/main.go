@@ -6,6 +6,7 @@ import (
 	"shopify-app/internal/api/router"
 	"shopify-app/internal/config"
 	"shopify-app/internal/database"
+	"shopify-app/internal/database/seeder"
 	"shopify-app/internal/repository"
 	"shopify-app/internal/service"
 
@@ -30,6 +31,11 @@ func main() {
 	// Auto-migrate the schema
 	if err := database.Migrate(db); err != nil {
 		log.Fatalf("failed to migrate database: %v", err)
+	}
+
+	// Seed the database with initial data
+	if err := seeder.Seed(db); err != nil {
+		log.Fatalf("failed to seed database: %v", err)
 	}
 
 	// Initialize repositories

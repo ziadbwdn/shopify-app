@@ -3,7 +3,7 @@ package utils // This line is CRUCIAL
 import (
 	"database/sql/driver"
 	"fmt"
-
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
@@ -64,4 +64,20 @@ func (b *BinaryUUID) Scan(value interface{}) error {
 	}
 	*b = BinaryUUID(u)
 	return nil
+}
+
+// UUIDFromParam extracts a UUID parameter from the Gin context and converts it to BinaryUUID.
+// It returns an error if the parameter is missing or not a valid UUID.
+func UUIDFromParam(c *gin.Context, paramName string) (BinaryUUID, error) {
+	paramValue := c.Param(paramName)
+	if paramValue == "" {
+		return BinaryUUID{}, fmt.Errorf("parameter '%s' is required", paramName)
+	}
+	
+	binaryUUID, err := ParseBinaryUUID(paramValue)
+	if err != nil {
+		return BinaryUUID{}, fmt.Errorf("invalid UUID parameter '%s': %w", paramName, err)
+	}
+	
+	return binaryUUID, nil
 }

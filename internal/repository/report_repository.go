@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"gorm.io/gorm"
 	"shopify-app/internal/contract"
 	"shopify-app/internal/entities"
@@ -185,7 +186,7 @@ func (r *reportRepository) GetSalesAnalytics(ctx context.Context, startDate, end
 		avg, _ := utils.Float64ToGormDecimal(totalRevenue / float64(analytics.TotalOrders))
 		analytics.AverageOrderValue = avg
 	} else {
-		analytics.AverageOrderValue = utils.NewGormDecimal("0")
+		analytics.AverageOrderValue = utils.MustNewGormDecimal("0")
 	}
 
 	err = r.db.WithContext(ctx).Model(&entities.OrderItem{}).

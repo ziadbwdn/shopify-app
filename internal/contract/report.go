@@ -3,7 +3,6 @@ package contract
 
 import (
 	"context"
-	"shopify-app/internal/entities"
 	"shopify-app/internal/exception"
 	"shopify-app/internal/utils"
 	"time"

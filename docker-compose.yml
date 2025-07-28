@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Go Application Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shopify_app
+    ports:
+      - "${PORT}:${PORT}"
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - shopify-network
+
+  # MySQL Database Service
+  db:
+    image: mysql:8.0
+    container_name: shopify_db
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - shopify-network
+
+networks:
+  shopify-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

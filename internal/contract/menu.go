@@ -3,9 +3,9 @@ package contract
 
 import (
 	"context"
-	"root-app/internal/entities"
-	"root-app/internal/exception"
-	"root-app/internal/utils"
+	"shopify-app/internal/entities"
+	"shopify-app/internal/exception"
+	"shopify-app/internal/utils"
 )
 
 // MenuRepository defines the contract for menu data access operations

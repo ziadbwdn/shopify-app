@@ -149,7 +149,7 @@ func (r *cartRepository) GetCartTotal(ctx context.Context, cartID utils.BinaryUU
 		return nil, exception.NewAppError(err, "failed to get cart items for total calculation")
 	}
 
-	total := utils.NewGormDecimal("0")
+	total := utils.MustNewGormDecimal("0")
 	for _, item := range items {
 		subtotal := item.GetSubtotal()
 		total = utils.MustGormDecimalAdd(*total, *subtotal)

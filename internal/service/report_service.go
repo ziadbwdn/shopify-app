@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/csv"
-	"fmt"
 	"shopify-app/internal/contract"
 	"shopify-app/internal/exception"
 	"shopify-app/internal/utils"

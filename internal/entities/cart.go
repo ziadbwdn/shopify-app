@@ -2,7 +2,7 @@
 package entities
 
 import (
-	"root-app/internal/utils"
+	"shopify-app/internal/utils"
 	"time"
 	"strconv"
 	"gorm.io/gorm"

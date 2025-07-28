@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"shopify-app/internal/exception"
 	"database/sql/driver"
 	"fmt"
+	"shopify-app/internal/exception"
 	"strconv"
 
 	pbdecimal "google.golang.org/genproto/googleapis/type/decimal"
@@ -60,9 +60,47 @@ func StringToGormDecimal(s string) (*GormDecimal, *exception.AppError) {
 }
 
 // GormDecimalToString converts a *utils.GormDecimal to a string.
-func GormDecimalToString(gd *GormDecimal) string {
-	if gd == nil {
-		return ""
-	}
+func GormDecimalToString(gd GormDecimal) string {
 	return gd.Internal.Value
+}
+
+// MustNewGormDecimal creates a new GormDecimal from a string and panics on error.
+func MustNewGormDecimal(s string) *GormDecimal {
+	d, err := StringToGormDecimal(s)
+	if err != nil {
+		panic(err)
+	}
+	return d
+}
+
+// GormDecimalToFloat64 converts a GormDecimal to a float64.
+func GormDecimalToFloat64(gd GormDecimal) (float64, error) {
+	return strconv.ParseFloat(gd.Internal.Value, 64)
+}
+
+// Float64ToGormDecimal converts a float64 to a GormDecimal.
+func Float64ToGormDecimal(f float64) (*GormDecimal, error) {
+	return StringToGormDecimal(strconv.FormatFloat(f, 'f', 2, 64))
+}
+
+// GormDecimalEquals checks if two GormDecimals are equal.
+func GormDecimalEquals(a, b GormDecimal) bool {
+	return a.Internal.Value == b.Internal.Value
+}
+
+// MustGormDecimalAdd adds two GormDecimals and panics on error.
+func MustGormDecimalAdd(a, b GormDecimal) *GormDecimal {
+	fa, err := GormDecimalToFloat64(a)
+	if err != nil {
+		panic(err)
+	}
+	fb, err := GormDecimalToFloat64(b)
+	if err != nil {
+		panic(err)
+	}
+	res, err := Float64ToGormDecimal(fa + fb)
+	if err != nil {
+		panic(err)
+	}
+	return res
 }
